@@ -87,5 +87,8 @@ Request: {
     actual: 240.99
 }
 
+PATCH:
+If there are 9 data points, delete the oldest data point
+
 DELETE: /earnings/:symbol 
 Deletes stock from database
