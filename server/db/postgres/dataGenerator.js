@@ -1,13 +1,14 @@
 // const companyNames = require('../templates/companyNames');
 const faker = require('faker');
+const log = require('fancy-log');
 var tickers = [];
-const length = 3; // should be 26 for final seeding
-var batchSize = 5; // should be 500,000 for final seeding (or thereabouts)
+const length = 26; // should be 26 for final seeding
+var batchSize = 1000000; // should be 500,000 for final seeding (or thereabouts)
 
 // create company table first
 // push all stock symbols to tickers array
 // when creating earnings table, iterate thru tickers array to create data
-
+log('hello from dataGenerator');
 const alphabet = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
 
 for (let i = 0; i < length; i++) {
@@ -24,14 +25,14 @@ for (let i = 0; i < length; i++) {
         for (let k = 0; k < length; k++) {
             for (let l = 0; l < length; l++) {
                 for (let m = 0; m < length; m++) {
-                    tickers.push(`${alphabet[i]}${alphabet[j]}${alphabet[k]}${alphabet[l]}`)
+                    tickers.push(`${alphabet[i]}${alphabet[j]}${alphabet[k]}${alphabet[l]}${alphabet[m]}`)
                 }
             }
         }
     }
 }
 // ticker now has 12,338,352 elements, stock symbols (strings) of length 4 and 5
-
+log('symbol generation complete');
 // for first 500,000 elements of ticker
 //   find a random company name
 //   add element and company name to query string
@@ -47,8 +48,9 @@ function batchCreate(start, batchSize) {
   queriesArray.push(query.substring(0, query.length-1) + `;`);
 }
 
-batchCreate(0,10);
-batchCreate(10,10);
+for (let i = 0; i < 11; i++) {
+    batchCreate(i * batchSize,batchSize);
+}
 
 module.exports = { queriesArray };
 

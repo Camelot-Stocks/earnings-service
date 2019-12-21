@@ -3,7 +3,7 @@ DROP TABLE IF EXISTS company, earnings;
 CREATE TABLE company (
     id  SERIAL,
     name  varchar,
-    symbol  varchar(5) UNIQUE PRIMARY KEY
+    symbol  varchar PRIMARY KEY
 );
 
 CREATE TABLE earnings (
