@@ -1,18 +1,26 @@
-// requires index.js
-// pulls in schema
-// requires fake data generator
-
 const { pool } = require('./index.js');
 const fs = require('fs');
 const path = require('path');
+const queriesArray = require('./dataGenerator.js').queriesArray;
+
+function sendAllQueries(queriesArray) {
+    batch = 0;
+    return queriesArray.reduce((chain, currentQuery) => {
+        return chain.then(() => {
+            pool.query(currentQuery);
+            batch++;
+            console.log('performing next query', batch);
+        })
+    }, Promise.resolve());
+}
 
 const location = path.join(__dirname, 'schema.sql');
 const schema = fs.readFileSync(location).toString();
 pool.query(schema)
-    .then(res => console.log(res))
+    .then(res => console.log('schema loaded'))
     .catch(err => console.error(err))
-    .then(() => pool.query(`INSERT INTO company (name, symbol) VALUES ('Apple', 'AAPL');`))
-    .then(res => console.log(res))
+    .then(() => sendAllQueries(queriesArray))
+    .then(res => console.log('seed successful'))
     .catch(err => console.log(err))
 
 

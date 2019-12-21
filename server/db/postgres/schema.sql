@@ -1,14 +1,14 @@
 DROP TABLE IF EXISTS company, earnings;
 
 CREATE TABLE company (
-    id  SERIAL PRIMARY KEY,
+    id  SERIAL,
     name  varchar,
-    symbol  varchar(5) UNIQUE
+    symbol  varchar(5) UNIQUE PRIMARY KEY
 );
 
 CREATE TABLE earnings (
     id SERIAL PRIMARY KEY,
-    company_id integer REFERENCES company(id),
+    symbol VARCHAR REFERENCES company(symbol),
     quarter integer,
     year integer,
     estimated float,
