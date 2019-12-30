@@ -1,25 +1,46 @@
 const faker = require('faker');
 const log = require('fancy-log');
-// const { tickers } = require('../postgres/dataGenerator.js');
-tickers = ['AAPL', 'GOOGL'];
+
+function createTickers() {
+    const alphabet = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
+    var tickers = [];
+    const length = 13;
+    for (let i = 0; i < length; i++) {
+        for (let j = 0; j < length; j++) {
+            for (let k = 0; k < length; k++) {
+                for (let l = 0; l < length; l++) {
+                    tickers.push(`${alphabet[i]}${alphabet[j]}${alphabet[k]}${alphabet[l]}`)
+                }
+            }
+        }
+    }
+    for (let i = 0; i < length; i++) {
+        for (let j = 0; j < length; j++) {
+            for (let k = 0; k < length; k++) {
+                for (let l = 0; l < length; l++) {
+                    for (let m = 0; m < length; m++) {
+                        tickers.push(`${alphabet[i]}${alphabet[j]}${alphabet[k]}${alphabet[l]}${alphabet[m]}`)
+                    }
+                }
+            }
+        }
+    }
+    return tickers;
+}
+
+const tickers = createTickers();
 
 const years = [2018, 2019];
 const quarters = [1, 2, 3, 4];
 function createPrices(symbol) {
     var base = Math.random() * 200;
-    var prices = [];
+    var prices = '';
     var company = faker.company.companyName();
     for (let i of years) {
         for (let j of quarters) {
             var delta = (Math.random() - 0.5) * base / 100;
-            prices.push({
-                symbol: symbol,
-                name: company,
-                quarter: j,
-                year: i,
-                estimated: Number.parseFloat(base + delta).toFixed(2),
-                actual: Number.parseFloat(base - delta).toFixed(2),
-            })
+            // column order: symbol, company, quarter, year, est, act
+            prices += `'${symbol}','${company}',${j},${i},${Number.parseFloat(base + delta).toFixed(2)},${Number.parseFloat(base - delta).toFixed(2)}\n`;
         }
     }
     return prices;
@@ -31,9 +52,8 @@ for (let ele of tickers) {
     rows.push(createPrices(ele));
 }
 
-console.log(rows);
+log('created rows');
 
-// Right now, rows is an array. Each element is another array representing a single company
-// Inside that second array are a bunch of objects, which are each Cassandra documents/rows
+// Right now, rows is an array. Each element of the array is a string, a new data point--Cassandra documents/rows
 
 module.exports = { rows };
