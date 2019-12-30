@@ -4,7 +4,7 @@ const log = require('fancy-log');
 const util = require('util');
 const exec = util.promisify(require('child_process').exec);
 // const { client } = require('./index.js');
-const { rows } = require('./dataGenerator.js');
+const { tickers, createPrices } = require('./dataGenerator.js');
 
 // PLAN:
 // take data from rows
@@ -15,12 +15,15 @@ let writeStream = fs.createWriteStream(path.join(__dirname, './table.csv'));
 log('starting csv write');
 
 function writeAll(writer, callback) {
-  let i = rows.length - 1;
+  let i = tickers.length;
   function write() {
     let ok = true;
     do {
       i -= 1;
-      const data = rows[i];
+      if (i % 1000000 === 0) {
+        log('writing next 8 million')
+      }
+      const data = createPrices(tickers[i]);
       if (i === 0) {
         writer.write(data, callback);
       } else {
