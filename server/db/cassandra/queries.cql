@@ -1,0 +1,1 @@
+COPY camelot_earnings.stock (symbol, year, quarter, actual, estimated, name) FROM '/Users/jessica/Documents/GitHub/Hack Reactor/Camelot/earnings-service/server/db/cassandra/table.csv' WITH DELIMITER=',' AND HEADER=FALSE AND MINBATCHSIZE=2 AND MAXBATCHSIZE=8 AND PAGESIZE=10 AND CHUNKSIZE=4000;

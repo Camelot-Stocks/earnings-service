@@ -1,58 +1,66 @@
-const fs = require('fs');
+// const fs = require('fs');
 const path = require('path');
 const log = require('fancy-log');
 const util = require('util');
 const exec = util.promisify(require('child_process').exec);
-// const { client } = require('./index.js');
-const { tickers, createPrices } = require('./dataGenerator.js');
+// const { tickers, createPrices } = require('./dataGenerator.js');
+const { client } = require('./index.js');
 
-// PLAN:
-// take data from rows
-// write it to CSVs
-// load those CSVs into Cassandra
 
-let writeStream = fs.createWriteStream(path.join(__dirname, './table.csv'));
-log('starting csv write');
 
-function writeAll(writer, callback) {
-  let i = tickers.length;
-  function write() {
-    let ok = true;
-    do {
-      i -= 1;
-      if (i % 1000000 === 0) {
-        log('writing next 8 million')
-      }
-      const data = createPrices(tickers[i]);
-      if (i === 0) {
-        writer.write(data, callback);
-      } else {
-// see if we should continue, or wait
-// don't pass the callback, because we're not done yet.
-        ok = writer.write(data);
-      }
-    } while (i > 0 && ok);
-    if (i > 0) {
-// had to stop early!
-// write some more once it drains
-      writer.once('drain', write);
-    }
-  }
-write()
+// async function writeAll () {
+//   // Write data to CSV (98.7 million records)
+//   let writeStream = fs.createWriteStream(path.join(__dirname, './table.csv'));
+//   log('starting csv write');
+//   let i = tickers.length;
+//   async function write() {
+//     let ok = true;
+//     do {
+//       i -= 1;
+//       if (i % 1000000 === 0) {
+//         log('writing next 8 million')
+//       }
+//       const data = createPrices(tickers[i]);
+//       if (i === 0) {
+//         writeStream.write(data);
+//         writeStream.end();
+//         log('wrote all data to csv');
+//         return true;
+//       } else {
+//         ok = writeStream.write(data);
+//       }
+//     } while (i > 0 && ok);
+//     if (i > 0) {
+//       writeStream.once('drain', write);
+//     }
+//   }
+// await write();
+// return true;
+// };
+
+const copyToDb = async () => {
+  // const location = '/Users/jessica/Documents/GitHub/Hack Reactor/Camelot/earnings-service/server/db/cassandra/table.csv'
+  const location = path.resolve(__dirname, 'queries.cql');
+  log(location);
+  // const query = `COPY camelot_earnings.stock (symbol, year, quarter, actual, estimated, name) FROM '${location}' WITH DELIMITER=',' AND HEADER=FALSE;`;
+  return exec(`cqlsh -u cassandra -p cassandra -f ./server/db/cassandra/queries.cql`, { maxBuffer: 5000*1024 }); //--debug -e '${query}'`).catch(log);
 }
 
-writeAll(writeStream, () => {
-  writeStream.end();
-  log('wrote all data to csv');
-});
+const seed = async () => {
+  // await Promise.resolve(writeAll());
+  await client.execute(`TRUNCATE camelot_earnings.stock;`);
+  log('existing tables truncated');
+  await copyToDb();
+  log('all data seeded');
+}
 
-// writeStream.write(rows);
-// // LOOK INTO DRAIN EVENT
-// writeStream.on('finish', () => {
-//     log('wrote all data to csv');
-// })
-//   .on('error', () => log(error));
-// writeStream.end();
+seed().catch(log);
+
+
+// Load CSV into Cassandra
+// client.execute(`COPY keyspace.tableName (col1,col2) FROM './table.csv' WITH DELIMITER=',' AND HEADER=FALSE;`);
+
+
 // --------------------------------------
 // FAILED METHODS OF IMPORTING SCHEMA:
 // const query1 = `CREATE KEYSPACE IF NOT EXISTS camelot_earnings

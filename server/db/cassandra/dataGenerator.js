@@ -1,5 +1,8 @@
 const faker = require('faker');
 const log = require('fancy-log');
+const fs = require('fs');
+const path = require('path');
+
 
 function createTickers() {
     const alphabet = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
@@ -35,25 +38,45 @@ function createPrices(symbol) {
     const quarters = [1, 2, 3, 4];
     var base = Math.random() * 200;
     var prices = '';
-    var company = faker.company.companyName();
+    var company = faker.company.companyName(0);
     for (let i of years) {
         for (let j of quarters) {
             var delta = (Math.random() - 0.5) * base / 100;
             // column order: symbol, company, quarter, year, est, act
-            prices += `'${symbol}','${company}',${j},${i},${Number.parseFloat(base + delta).toFixed(2)},${Number.parseFloat(base - delta).toFixed(2)}\n`;
+            prices += `${symbol},${i},${j},${Number.parseFloat(base + delta).toFixed(2)},${Number.parseFloat(base - delta).toFixed(2)},${company}\n`;
         }
     }
     return prices;
 }
-// var rows = [];
-// for (let ele of tickers) {
-//     // add fields: company name, quarter, year,
-//     // estimated and actual values
-//     rows.push(createPrices(ele));
-// }
 
-// log('created rows');
+// module.exports = { tickers, createPrices };
 
-// Right now, rows is an array. Each element of the array is a string, a new data point--Cassandra documents/rows
+function writeAll () {
+    // Write data to CSV (98.7 million records)
+    let writeStream = fs.createWriteStream(path.join(__dirname, './table.csv'));
+    log('starting csv write');
+    let i = tickers.length;
+    function write() {
+      let ok = true;
+      do {
+        i -= 1;
+        if (i % 1000000 === 0) {
+          log('writing next 8 million')
+        }
+        const data = createPrices(tickers[i]);
+        if (i === 0) {
+          writeStream.write(data);
+          writeStream.end();
+          log('wrote all data to csv');
+        } else {
+          ok = writeStream.write(data);
+        }
+      } while (i > 0 && ok);
+      if (i > 0) {
+        writeStream.once('drain', write);
+      }
+    }
+  write();
+  };
 
-module.exports = { tickers, createPrices };
+  writeAll();
