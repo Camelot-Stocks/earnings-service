@@ -49,8 +49,6 @@ function createPrices(symbol) {
     return prices;
 }
 
-// module.exports = { tickers, createPrices };
-
 function writeAll () {
     // Write data to CSV (98.7 million records)
     let writeStream = fs.createWriteStream(path.join(__dirname, './table.csv'));
