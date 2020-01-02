@@ -3,7 +3,7 @@ const faker = require('faker');
 const log = require('fancy-log');
 var tickers = [];
 const length = 26; // should be 26 for final seeding
-var batchSize = 1000000; // should be 500,000 for final seeding (or thereabouts)
+var batchSize = 1000000; // should be 1,000,000 for final seeding (or thereabouts)
 
 // create company table first
 // push all stock symbols to tickers array
@@ -37,7 +37,7 @@ log('symbol generation complete');
 //   find a random company name
 //   add element and company name to query string
 // send query
-var queriesArray = [];
+var companyArray = [];
 
 function batchCreate(start, batchSize) {
   var query = `INSERT INTO company (name, symbol) VALUES `;
@@ -45,14 +45,18 @@ function batchCreate(start, batchSize) {
       var name = faker.company.companyName();
       query += `($$${name}$$,$$${tickers[i]}$$),`;
   }
-  queriesArray.push(query.substring(0, query.length-1) + `;`);
+  companyArray.push(query.substring(0, query.length-1) + `;`);
 }
 
 for (let i = 0; i < 11; i++) {
     batchCreate(i * batchSize,batchSize);
 }
 
-module.exports = { queriesArray };
+// for (var ele of tickers) {
+
+// }
+
+module.exports = { companyArray, tickers };
 
 
 

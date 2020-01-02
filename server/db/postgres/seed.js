@@ -3,7 +3,9 @@ const fs = require('fs');
 const path = require('path');
 const log = require('fancy-log');
 const queriesArray = require('./dataGenerator.js').queriesArray;
+
 log('boom from seed');
+
 function sendAllQueries(queriesArray) {
     batch = 0;
     return queriesArray.reduce((chain, currentQuery) => {

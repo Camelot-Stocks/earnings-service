@@ -1,16 +1,14 @@
-CREATE KEYSPACE IF NOT EXISTS camelot_earnings 
-WITH replication = {'class': 'NetworkTopologyStrategy', 'replication_factor': 2};
+CREATE KEYSPACE IF NOT EXISTS camelot_earnings
+WITH replication = { 'class' : 'SimpleStrategy' , 'replication_factor' : '2'};
 
-USE camelot_earnings;
+DROP TABLE IF EXISTS camelot_earnings.stock;
 
-DROP TABLE IF EXISTS stock;
-
-CREATE TABLE stock (
-    symbol varchar(5),
+CREATE TABLE camelot_earnings.stock (
+    symbol varchar,
     name varchar,
     quarter int,
     year int,
     estimated float,
     actual float,
-    PRIMARY KEY (symbol))
+    PRIMARY KEY (symbol, year, quarter))
 WITH CLUSTERING ORDER BY (year DESC, quarter DESC);

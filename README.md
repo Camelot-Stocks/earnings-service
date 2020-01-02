@@ -7,6 +7,10 @@ If you're developing, you need to use npm run build:watch
 3. run `npm run db:setup`
 4. `npm start`
 
+# To set up databases:
+Postgres: run seed.js to import schema and seed database
+Cassandra: copy schema and paste it at CQLSH command line
+
 # API Routes
 
 GET: /earnings/:symbol
