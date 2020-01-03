@@ -9,7 +9,10 @@ If you're developing, you need to use npm run build:watch
 
 # To set up databases:
 Postgres: run seed.js to import schema and seed database
+
 Cassandra: copy schema and paste it at CQLSH command line
+Run `db:generate` to generate data and write it to CSV.
+Run `db:seed` to copy the CSV to Cassandra.
 
 # API Routes
 

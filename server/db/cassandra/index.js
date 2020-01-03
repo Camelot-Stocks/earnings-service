@@ -11,6 +11,6 @@ const clientOptions = {
 }; 
 
 const client = new cassandra.Client(clientOptions);
-client.connect((err, res) => log(err, res));
+client.connect(log('Connected to Cassandra'));
 
 module.exports = { client };
