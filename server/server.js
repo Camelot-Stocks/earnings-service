@@ -1,6 +1,6 @@
 const express = require('express')
 const path = require('path')
-const Graph = require('./db/graph.js')
+const { client } = require('./db/cassandra/index.js');
 const cors = require('cors')
 const app = express()
 
@@ -9,23 +9,41 @@ app.use(cors())
 app.use(express.urlencoded());
 app.use('/', express.static(path.resolve(__dirname, '../public')))
 
+app.get('/earnings/:symbol', (req, res) => {
+  const symbol = req.params.symbol;
+  client.execute(`SELECT * FROM camelot_earnings.stock WHERE symbol='${symbol}';`)
+    .then(result => res.send(result.rows))
+    .catch(err => console.log(err));
+})
 
-app.get('/earnings/getData', async (req, res) => {
-  let id = !!req.query.id ? req.query.id : 1
-  Graph.find({graph_id: id}, (err, data) => {
-    if (err) {
-      throw err
-    }
+app.post('/earnings/:symbol', (req, res) => {
+  const symbol = req.params.symbol;
+  const year = req.body.year;
+  const quarter = req.body.quarter;
+  const estimated = req.body.estimated;
+  const name = req.body.name;
+  client.execute(`INSERT INTO camelot_earnings.stock (symbol,year,quarter,actual,estimated,name) VALUES('${symbol}',${year},${quarter},null,${estimated},'${name}');`)
+    .then(result => res.sendStatus(200))
+    .catch(err => res.send(err));
+})
 
-    if (data.length === 0) {
-      res.writeHead(404)
-      res.end("data not found")
-    } else {
-      res.writeHead(200)
-      //  right now hard coded to take in the first chart
-      res.end(JSON.stringify(data[0]))
-    }
-  })
+app.put('/earnings/:symbol', (req, res) => {
+  const symbol = req.params.symbol;
+  const year = req.body.year;
+  const quarter = req.body.quarter;
+  const actual = req.body.actual;
+  client.execute(`UPDATE camelot_earnings.stock SET actual=${actual} WHERE symbol='${symbol}' AND year=${year} AND quarter=${quarter};`)
+    .then(result => res.sendStatus(200))
+    .catch(err => console.log(err));
+})
+
+app.delete('/earnings/:symbol', (req, res) => {
+  const symbol = req.params.symbol;
+  const year = req.body.year;
+  const quarter = req.body.quarter;
+  client.execute(`DELETE actual FROM camelot_earnings.stock WHERE symbol='${symbol}' AND year=${year} AND quarter=${quarter};`)
+    .then(result => res.sendStatus(200))
+    .catch(err => console.log(err));
 })
 
 module.exports = app
