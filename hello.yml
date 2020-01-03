@@ -1,0 +1,31 @@
+config:
+    target: 'http://localhost:3006'
+    phases:
+      - duration: 30
+        arrivalRate: 20
+      - duration: 240
+        arrivalRate: 20
+        rampTo: 400
+      - duration: 30
+        arrivalRate: 400
+    variables:
+        symbol:
+            - "GOOGL"
+            - "AAPL"
+            - "AMZN"
+            - "MNOPQ"
+            - "EDCBA"
+        estimated:
+            - 54.95
+            - 120.31
+scenarios:
+    - name: "GET"
+      flow:
+        - get:
+            url: "/earnings/{{ symbol }}"
+    # - name: "POST"
+    #   flow:
+    #     - post:
+    #         url: "/earnings/{{ symbol }}"
+    #         body: "year=2020,quarter=1,estimated={{ estimated }}"
+  
