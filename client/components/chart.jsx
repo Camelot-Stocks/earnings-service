@@ -20,7 +20,7 @@ class Chart extends React.Component {
     } else {
       document.body.style.background = 'white';
     }
-    fetch(`/earnings${window.location.pathname}`, {
+    fetch(`http://localhost:3006/earnings${window.location.pathname}`, {
       type: "GET",
     }).then((response) => {
       return response.json()
