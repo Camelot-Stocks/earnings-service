@@ -10,16 +10,16 @@ const ChartArea = styled.div`
 const formatData = (data) => {
   let formatted = data.map((data, idx) => {
     return {
-      name: data.date,
-      x: data.date,
+      name: `${data.year} Q${data.quarter}`,
+      x: `${data.year} Q${data.quarter}`,
       y: data.estimated,
       type: "estimated"
     }
   })
   data.forEach((data, idx) => {
     formatted.push({
-      name: data.date,
-      x: data.date,
+      name: `${data.year} Q${data.quarter}`,
+      x: `${data.year} Q${data.quarter}`,
       y: data.actual,
       type: "actual"
     })

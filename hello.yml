@@ -1,13 +1,10 @@
 config:
     target: 'http://localhost:3006'
+    http:
+        pool: 20
     phases:
       - duration: 30
         arrivalRate: 20
-      - duration: 240
-        arrivalRate: 20
-        rampTo: 400
-      - duration: 30
-        arrivalRate: 400
     variables:
         symbol:
             - "GOOGL"
@@ -21,8 +18,10 @@ config:
 scenarios:
     - name: "GET"
       flow:
-        - get:
-            url: "/earnings/{{ symbol }}"
+        - loop:
+            - get:
+                url: "/earnings/{{ symbol }}"
+          count: 100
     # - name: "POST"
     #   flow:
     #     - post:

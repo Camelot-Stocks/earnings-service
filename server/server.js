@@ -8,11 +8,11 @@ const app = express()
 app.use(express.json());
 app.use(cors())
 app.use(express.urlencoded());
-app.use('/', express.static(path.resolve(__dirname, '../public')))
+app.use('/:symbol', express.static(path.resolve(__dirname, '../public')))
 
 app.get('/earnings/:symbol', (req, res) => {
   const symbol = req.params.symbol;
-  client.execute(`SELECT * FROM camelot_earnings.stock WHERE symbol='${symbol}';`)
+  client.execute(`SELECT * FROM camelot_earnings.stock WHERE symbol='${symbol}' ORDER BY year ASC;`)
     .then(result => res.send(result.rows))
     .catch(err => console.log(err));
 })
