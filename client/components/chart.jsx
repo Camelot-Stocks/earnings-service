@@ -20,14 +20,14 @@ class Chart extends React.Component {
     } else {
       document.body.style.background = 'white';
     }
-    fetch(`/earnings/getData${window.location.search}`, {
+    fetch(`http://localhost:3006/earnings${window.location.pathname}`, {
       type: "GET",
     }).then((response) => {
       return response.json()
     }).then((data) => {
       console.log("got data")
       this.setState({
-        data: data.data
+        data: data
       })
     })
     .catch((err) => {
