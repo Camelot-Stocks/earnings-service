@@ -9,3 +9,5 @@ public/bundle.js
 server/db/cassandra/table.csv
 
 newrelic_agent.log
+newrelic.config.js
+sdc.pem
