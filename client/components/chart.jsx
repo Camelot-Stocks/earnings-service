@@ -20,7 +20,7 @@ class Chart extends React.Component {
     } else {
       document.body.style.background = 'white';
     }
-    fetch(`http://54.183.84.160:3006/earnings${window.location.pathname}`, {
+    fetch(`http://54.183.84.160:3006/earnings${window.location.search}`, {
       type: "GET",
     }).then((response) => {
       return response.json()
@@ -32,6 +32,7 @@ class Chart extends React.Component {
     })
     .catch((err) => {
       console.log('error with response')
+      console.log(window.location.pathname)
     })
 
   }

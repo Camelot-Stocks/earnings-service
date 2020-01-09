@@ -1,4 +1,4 @@
-const key = require('./newrelic.config.js')
+// const key = require('./newrelic.config.js')
 'use strict'
 /**
  * New Relic agent configuration.
