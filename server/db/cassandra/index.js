@@ -1,7 +1,7 @@
 const cassandra = require('cassandra-driver');
 const log = require('fancy-log');
 
-const localDatacenter = 'Test Cluster';
+const localDatacenter = 'us-west';
 const loadBalancingPolicy = new cassandra.policies.loadBalancing.DCAwareRoundRobinPolicy(localDatacenter); 
 const clientOptions = {
    policies : {
