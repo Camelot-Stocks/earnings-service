@@ -5,6 +5,7 @@ coverage
 .DS_Store?
 
 public/bundle.js
+public/loaderio-3e706d9e721f792072f90cf3c4c305d3.txt
 
 server/db/cassandra/table.csv
 server/db/cassandra/test.csv

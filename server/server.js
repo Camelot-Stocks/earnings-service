@@ -9,7 +9,7 @@ app.use(express.json());
 app.use(cors())
 app.use(express.urlencoded());
 app.use('/:symbol', express.static(path.resolve(__dirname, '../public')))
-app.use('/loaderio-3e706d9e721f792072f90cf3c4c305d3', express.static(path.resolve(__dirname, '../public', 'loaderio-3e706d9e721f792072f90cf3c4c305d3.txt')))
+app.use(express.static(path.resolve(__dirname, '../public')))
 
 app.get('/earnings/:symbol', (req, res) => {
   const symbol = req.params.symbol;
