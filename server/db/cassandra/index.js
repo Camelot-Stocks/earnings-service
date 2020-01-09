@@ -7,7 +7,7 @@ const clientOptions = {
    policies : {
       loadBalancing : loadBalancingPolicy
    },
-   contactPoints: ['172.31.17.118']
+   contactPoints: ['52.52.21.106']
 }; 
 
 const client = new cassandra.Client(clientOptions);
